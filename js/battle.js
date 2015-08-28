@@ -5,8 +5,10 @@ window.onload = function()
 	var ctx = c.getContext("2d");
 	c.width = 800;
 	c.height = 255*2;
-	ctx.font = "20px Arial";
+	ctx.font = "16px Arial";
 	ctx.fillStyle = "#ffffff";
+	ctx.lineWidth = 2;
+	ctx.strokeStyle = "#000000";
 
 	// main game loop
 	var lastTime;
@@ -30,7 +32,8 @@ window.onload = function()
 	resources.load([
 		'assets/cave_bg.png',
 		'assets/cecil.gif',
-		'assets/imp.gif'
+		'assets/imp.gif',
+		'assets/bars.gif'
 	]);
 	resources.onReady(init);
 
@@ -39,11 +42,15 @@ window.onload = function()
 	ctx.mozImageSmoothingEnabled = false;
 	ctx.imageSmoothingEnabled = false;
 
+	//assign images
 	var bg = new Image();
 	bg.src = "assets/cave_bg.png";
 
 	var hero = new Image();
 	hero.src = "assets/cecil.gif";
+
+	var HPMP = new Image();
+	HPMP.src = "assets/bars.gif";
 
 	var imp = new Image();
 	imp.src = "assets/imp.gif";
@@ -72,11 +79,12 @@ window.onload = function()
 	//spacing of player names
 	var textSpacing = 22;
 	var textPlayerNames = 600;
-	var player1Name = "Player 1";
-	var player2Name = "Player 2";
-	var player3Name = "Player 3";
-	var player4Name = "Player 4";
-	var player5Name = "Player 5";
+	var player1Name = "One";
+	var player2Name = "Two";
+	var player3Name = "Three";
+	var player4Name = "Four";
+	var player5Name = "Five";
+	var textHP = textPlayerNames+100;
 
 	//character poses on sprite sheet
 	var poseStanding = 0;
@@ -93,10 +101,10 @@ window.onload = function()
 	var poseDead = (charWidth+1)*11;
 
 	//player poses
-	var player1Pose = poseStanding;
+	var player1Pose = poseWeak;
 	var player2Pose = poseCasting1;
 	var player3Pose = poseReady;
-	var player4Pose = poseWeak;
+	var player4Pose = poseStanding;
 	var player5Pose = poseDead;
 
 	//player row selection
@@ -106,6 +114,25 @@ window.onload = function()
 	var player4Row = frontRow;
 	var player5Row = frontRow;
 
+	//player hp/mp
+	var player1hp = 2;
+	var player1hpMax = 100;
+	var player1mp = 100;
+	var player1mpMax = 100;
+
+	//calculate the hp/mp bar position
+	function barPercent(current, max)
+	{
+		return 100-5*Math.ceil(((current/max)*100)/5);
+	}
+
+	//combine stroke & fill text functions to make outlined text
+	function niceText(text, horizontal, vertical)
+	{
+		ctx.strokeText(text, horizontal, vertical);
+		ctx.fillText(text, horizontal, vertical);
+	};
+
 	bg.onload = function()
 	{
 		ctx.drawImage(bg, 0, 0, bgSize*scale, bgSize*scale);
@@ -113,32 +140,76 @@ window.onload = function()
 
 		ctx.drawImage(imp, 0, 0, enemySmall, enemySmall, 300, 200, enemySmall*scale, enemySmall*scale);
 
+		//draw players (alive or dead) and hp/mp bars
 		if (player1Pose!=poseDead)
+		{
 			ctx.drawImage(hero, player1Pose, 0, charWidth, charHeight, player1Row, player1, charWidth*scale, charHeight*scale);
+			ctx.drawImage(HPMP, barPercent(player1hp, player1hpMax), 0, 5, 24, player1Row+35, player1, 5*scale, 24*scale);
+			ctx.drawImage(HPMP, 0, 24, 5, 48, player1Row+47, player1, 5*scale, 24*scale);
+		}
 		else
+		{
 			ctx.drawImage(hero, player1Pose, 0, charWidthDead, charHeight, player1Row, player1, charWidthDead*scale, charHeight*scale);
+			ctx.drawImage(HPMP, 100, 0, 5, 24, player1Row+50, player1, 5*scale, 24*scale);
+			ctx.drawImage(HPMP, 100, 24, 5, 48, player1Row+62, player1, 5*scale, 24*scale);
+		}
 		if (player2Pose!=poseDead)
+		{
 			ctx.drawImage(hero, player2Pose, 0, charWidth, charHeight, player2Row, player2, charWidth*scale, charHeight*scale);
+			ctx.drawImage(HPMP, 0, 0, 5, 24, player2Row+35, player2, 5*scale, 24*scale);
+			ctx.drawImage(HPMP, 50, 24, 5, 48, player2Row+47, player2, 5*scale, 24*scale);
+		}
 		else
+		{
 			ctx.drawImage(hero, player2Pose, 0, charWidthDead, charHeight, player2Row, player2, charWidthDead*scale, charHeight*scale);
+			ctx.drawImage(HPMP, 100, 0, 5, 24, player2Row+50, player2, 5*scale, 24*scale);
+			ctx.drawImage(HPMP, 100, 24, 5, 48, player2Row+62, player2, 5*scale, 24*scale);
+		}
 		if (player3Pose!=poseDead)
+		{
 			ctx.drawImage(hero, player3Pose, 0, charWidth, charHeight, player3Row, player3, charWidth*scale, charHeight*scale);
+			ctx.drawImage(HPMP, 0, 0, 5, 24, player3Row+35, player3, 5*scale, 24*scale);
+			ctx.drawImage(HPMP, 0, 24, 5, 48, player3Row+47, player3, 5*scale, 24*scale);
+		}
 		else
+		{
 			ctx.drawImage(hero, player3Pose, 0, charWidthDead, charHeight, player3Row, player3, charWidthDead*scale, charHeight*scale);
+			ctx.drawImage(HPMP, 100, 0, 5, 24, player3Row+50, player3, 5*scale, 24*scale);
+			ctx.drawImage(HPMP, 100, 24, 5, 48, player3Row+62, player3, 5*scale, 24*scale);
+		}
 		if (player4Pose!=poseDead)
+		{
 			ctx.drawImage(hero, player4Pose, 0, charWidth, charHeight, player4Row, player4, charWidth*scale, charHeight*scale);
+			ctx.drawImage(HPMP, 0, 0, 5, 24, player4Row+35, player4, 5*scale, 24*scale);
+			ctx.drawImage(HPMP, 0, 24, 5, 48, player4Row+47, player4, 5*scale, 24*scale);
+		}
 		else
+		{
 			ctx.drawImage(hero, player4Pose, 0, charWidthDead, charHeight, player4Row, player4, charWidthDead*scale, charHeight*scale);
+			ctx.drawImage(HPMP, 100, 0, 5, 24, player4Row+50, player4, 5*scale, 24*scale);
+			ctx.drawImage(HPMP, 100, 24, 5, 48, player4Row+62, player4, 5*scale, 24*scale);
+		}
 		if (player5Pose!=poseDead)
+		{
 			ctx.drawImage(hero, player5Pose, 0, charWidth, charHeight, player1Row, player5, charWidth*scale, charHeight*scale);
+		}
 		else
+		{
 			ctx.drawImage(hero, player5Pose, 0, charWidthDead, charHeight, player1Row, player5, charWidthDead*scale, charHeight*scale);
+			ctx.drawImage(HPMP, 100, 0, 5, 24, player5Row+50, player5, 5*scale, 24*scale);
+			ctx.drawImage(HPMP, 100, 24, 5, 48, player5Row+62, player5, 5*scale, 24*scale);
+		}
 
-		ctx.fillText(player1Name,textPlayerNames,textHeight);
-		ctx.fillText(player2Name,textPlayerNames,textHeight+(textSpacing*1));
-		ctx.fillText(player3Name,textPlayerNames,textHeight+(textSpacing*2));
-		ctx.fillText(player4Name,textPlayerNames,textHeight+(textSpacing*3));
-		ctx.fillText(player5Name,textPlayerNames,textHeight+(textSpacing*4));
+		niceText(player1Name,textPlayerNames,textHeight);
+		niceText(player1hp+"/"+player1hpMax,textHP,textHeight);
+		niceText(player2Name,textPlayerNames,textHeight+(textSpacing*1));
+		niceText("100/100",textHP,textHeight+(textSpacing*1));
+		niceText(player3Name,textPlayerNames,textHeight+(textSpacing*2));
+		niceText("100/100",textHP,textHeight+(textSpacing*2));
+		niceText(player4Name,textPlayerNames,textHeight+(textSpacing*3));
+		niceText("100/100",textHP,textHeight+(textSpacing*3));
+		niceText(player5Name,textPlayerNames,textHeight+(textSpacing*4));
+		niceText("0/100",textHP,textHeight+(textSpacing*4));
 	}
 
 	function reset()
