@@ -21,6 +21,7 @@ window.onload = function()
 		ctx.drawImage(bg, 0, 0, bgSize*scale, bgSize*scale);
 		ctx.drawImage(bg, bgSize*scale, 0, bgSize*scale, bgSize*scale);
 		ctx.drawImage(hero, 0, 0, charWidth, charHeight, 200, 200, charWidth*scale, charHeight*scale);
+		ctx.drawImage(hero, 17, 0, charWidth, charHeight, 200, 300, charWidth*scale, charHeight*scale);
 		ctx.fillText("Hello World",10,300);
 	}
 	bg.src = "assets/cave_bg.png";
