@@ -10,6 +10,11 @@ window.onload = function()
 	ctx.lineWidth = 2;
 	ctx.strokeStyle = "#000000";
 
+	//disable smoothing of scaled-up images
+	ctx.webkitImageSmoothingEnabled = false;
+	ctx.mozImageSmoothingEnabled = false;
+	ctx.imageSmoothingEnabled = false;
+
 	// main game loop
 	var lastTime;
 	function main()
@@ -33,18 +38,17 @@ window.onload = function()
 		'assets/cave_bg.png',
 		'assets/cecil.gif',
 		'assets/imp.gif',
-		'assets/bars.gif'
+		'assets/bars.gif',
+		'assets/menu.gif'
 	]);
 	resources.onReady(init);
-
-	//disable smoothing of scaled-up images
-	ctx.webkitImageSmoothingEnabled = false;
-	ctx.mozImageSmoothingEnabled = false;
-	ctx.imageSmoothingEnabled = false;
 
 	//assign images
 	var bg = new Image();
 	bg.src = "assets/cave_bg.png";
+
+	var menu = new Image();
+	menu.src = "assets/menu.gif";
 
 	var hero = new Image();
 	hero.src = "assets/cecil.gif";
@@ -70,21 +74,24 @@ window.onload = function()
 	var player3 = player2+(charHeight*scale)+charSpacing;
 	var player4 = player3+(charHeight*scale)+charSpacing;
 	var player5 = player4+(charHeight*scale)+charSpacing;
-	var frontRow = 700;
+	var frontRow = 400;
 	var backRow = frontRow+(charWidth*scale)+charSpacing;
 
-	//vertical spacing of lower text
+	//spacing of menu text
+	var chatWindow = 515;
 	var textHeight = 400;
-
-	//spacing of player names
-	var textSpacing = 22;
-	var textPlayerNames = 600;
-	var player1Name = "One";
-	var player2Name = "Two";
-	var player3Name = "Three";
-	var player4Name = "Four";
-	var player5Name = "Five";
+	var actionMenu = 125;
+	var textPlayerNames = actionMenu+80;
 	var textHP = textPlayerNames+100;
+	var textMP = textHP+100;
+	var textSpacing = 22;
+
+	//player names
+	var player1Name = "PlayerOne";
+	var player2Name = "PlayerTwo";
+	var player3Name = "PlayerThree";
+	var player4Name = "PlayerFour";
+	var player5Name = "PlayerFive";
 
 	//character poses on sprite sheet
 	var poseStanding = 0;
@@ -115,9 +122,9 @@ window.onload = function()
 	var player5Row = frontRow;
 
 	//player hp/mp
-	var player1hp = 2;
+	var player1hp = 1;
 	var player1hpMax = 100;
-	var player1mp = 100;
+	var player1mp = 55;
 	var player1mpMax = 100;
 
 	//calculate the hp/mp bar position
@@ -136,16 +143,15 @@ window.onload = function()
 	bg.onload = function()
 	{
 		ctx.drawImage(bg, 0, 0, bgSize*scale, bgSize*scale);
-		ctx.drawImage(bg, bgSize*scale, 0, bgSize*scale, bgSize*scale);
 
-		ctx.drawImage(imp, 0, 0, enemySmall, enemySmall, 300, 200, enemySmall*scale, enemySmall*scale);
+		ctx.drawImage(imp, 0, 0, enemySmall, enemySmall, 200, 200, enemySmall*scale, enemySmall*scale);
 
 		//draw players (alive or dead) and hp/mp bars
 		if (player1Pose!=poseDead)
 		{
 			ctx.drawImage(hero, player1Pose, 0, charWidth, charHeight, player1Row, player1, charWidth*scale, charHeight*scale);
 			ctx.drawImage(HPMP, barPercent(player1hp, player1hpMax), 0, 5, 24, player1Row+35, player1, 5*scale, 24*scale);
-			ctx.drawImage(HPMP, 0, 24, 5, 48, player1Row+47, player1, 5*scale, 24*scale);
+			ctx.drawImage(HPMP, barPercent(player1mp, player1mpMax), 24, 5, 48, player1Row+47, player1, 5*scale, 24*scale);
 		}
 		else
 		{
@@ -157,7 +163,7 @@ window.onload = function()
 		{
 			ctx.drawImage(hero, player2Pose, 0, charWidth, charHeight, player2Row, player2, charWidth*scale, charHeight*scale);
 			ctx.drawImage(HPMP, 0, 0, 5, 24, player2Row+35, player2, 5*scale, 24*scale);
-			ctx.drawImage(HPMP, 50, 24, 5, 48, player2Row+47, player2, 5*scale, 24*scale);
+			ctx.drawImage(HPMP, 0, 24, 5, 48, player2Row+47, player2, 5*scale, 24*scale);
 		}
 		else
 		{
@@ -200,16 +206,44 @@ window.onload = function()
 			ctx.drawImage(HPMP, 100, 24, 5, 48, player5Row+62, player5, 5*scale, 24*scale);
 		}
 
+		//enemy list menu
+		ctx.drawImage(menu, 0, textHeight-25);
+		niceText("Imp",15,textHeight+(textSpacing*0));
+
+		//action menu
+		ctx.drawImage(menu, actionMenu-15, textHeight-25);
+		niceText("Attack",actionMenu,textHeight+(textSpacing*0));
+		niceText("Special",actionMenu,textHeight+(textSpacing*1));
+		niceText("Magic",actionMenu,textHeight+(textSpacing*2));
+		niceText("Item",actionMenu,textHeight+(textSpacing*3));
+
+		//player names text menu
+		ctx.drawImage(menu, textPlayerNames-15, textHeight-25);
 		niceText(player1Name,textPlayerNames,textHeight);
-		niceText(player1hp+"/"+player1hpMax,textHP,textHeight);
+		niceText("HP: "+player1hp+"/"+player1hpMax,textHP,textHeight+(textSpacing*0));
+		niceText("MP: 100/100",textMP,textHeight+(textSpacing*0));
+
 		niceText(player2Name,textPlayerNames,textHeight+(textSpacing*1));
-		niceText("100/100",textHP,textHeight+(textSpacing*1));
+		niceText("HP: 100/100",textHP,textHeight+(textSpacing*1));
+		niceText("MP: 100/100",textMP,textHeight+(textSpacing*1));
+
 		niceText(player3Name,textPlayerNames,textHeight+(textSpacing*2));
-		niceText("100/100",textHP,textHeight+(textSpacing*2));
+		niceText("HP: 100/100",textHP,textHeight+(textSpacing*2));
+		niceText("MP: 100/100",textMP,textHeight+(textSpacing*2));
+
 		niceText(player4Name,textPlayerNames,textHeight+(textSpacing*3));
-		niceText("100/100",textHP,textHeight+(textSpacing*3));
+		niceText("HP: 100/100",textHP,textHeight+(textSpacing*3));
+		niceText("MP: 100/100",textMP,textHeight+(textSpacing*3));
+
 		niceText(player5Name,textPlayerNames,textHeight+(textSpacing*4));
-		niceText("0/100",textHP,textHeight+(textSpacing*4));
+		niceText("HP: 0/100",textHP,textHeight+(textSpacing*4));
+		niceText("MP: 100/100",textMP,textHeight+(textSpacing*4));
+
+		//chat window
+		ctx.drawImage(menu, chatWindow-15, 0);
+		niceText("PlayerOne: ouch.",chatWindow,25+(textSpacing*0));
+		niceText("PlayerFive: i am slain...",chatWindow,25+(textSpacing*1));
+		niceText("PlayerTwo: rezzing",chatWindow,25+(textSpacing*2));
 	}
 
 	function reset()
