@@ -160,8 +160,16 @@ window.onload = function()
 
 	function readyBarDisplay(input)
 	{
+		var pixels = 4;
 		var maxVal = 108;
-		return 4*Math.ceil(((input*maxVal)/100)/4);
+		return pixels*Math.ceil(((input*maxVal)/100)/pixels);
+	}
+
+	function enemyBarDisplay(input)
+	{
+		var pixels = 3;
+		var maxVal = 94;
+		return pixels*Math.ceil(((input*maxVal)/100)/pixels);
 	}
 
 	//combine stroke & fill text functions to make outlined text
@@ -237,10 +245,11 @@ window.onload = function()
 		});
 	};
 
-	function drawEnemy(enemyName, enemyNum, enemyX, enemyY)
+	function drawEnemy(enemyName, enemyNum, enemyX, enemyY, health)
 	{
 		enemyText(enemyName,enemyX,enemyY-13);
-		ctx.drawImage(enemybar, 0, 0, 32, 4, enemyX, enemyY-10, 32*scale, 4*scale);
+		//ctx.drawImage(enemybar, 0, 0, 32, 4, enemyX, enemyY-10, 32*scale, 4*scale);
+		ctx.drawImage(enemybar, 0, enemyBarDisplay(health), 32, 4, enemyX, enemyY-10, 32*scale, 4*scale);
 		ctx.drawImage(imp, 0, 0, enemySmall, enemySmall, enemyX, enemyY, enemySmall*scale, enemySmall*scale);
 		niceText(enemyName,hText,textHeight+(textSpacing*(enemyNum-1)));
 	};
@@ -327,7 +336,7 @@ window.onload = function()
 		drawFloor('B1');
 		drawChatMenu();
 
-		drawEnemy('Red Imp', 1, 200, 200);
+		drawEnemy('Red Imp', 1, 200, 200, 75);
 
 		drawPlayer(1);
 		drawPlayer(2);
