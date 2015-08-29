@@ -43,7 +43,8 @@ window.onload = function()
 		'assets/readybar.gif',
 		'assets/menu.gif',
 		'assets/menu-chat.gif',
-		'assets/menu-floor.gif'
+		'assets/menu-floor.gif',
+		'assets/menu-action.gif'
 	]);
 	resources.onReady(init);
 
@@ -59,6 +60,9 @@ window.onload = function()
 
 	var menufloor = new Image();
 	menufloor.src = "assets/menu-floor.gif";
+
+	var menuaction = new Image();
+	menuaction.src = "assets/menu-action.gif";
 
 	var hero = new Image();
 	hero.src = "assets/cecil.gif";
@@ -179,6 +183,16 @@ window.onload = function()
 		ctx.fillText(text, horizontal, vertical);
 	};
 
+	function actionMenuPopUp(specialAction)
+	{
+		ctx.drawImage(menuaction, 0, 0, 82, 135, actionMenu-hText, textHeight-vText, 82, 135);
+		niceText("Attack",actionMenu,textHeight+(textSpacing*0));
+		niceText("Defend",actionMenu,textHeight+(textSpacing*1));
+		niceText(specialAction,actionMenu,textHeight+(textSpacing*2));
+		niceText("Magic",actionMenu,textHeight+(textSpacing*3));
+		niceText("Item",actionMenu,textHeight+(textSpacing*4));
+	};
+
 	bg.onload = function()
 	{
 		ctx.drawImage(bg, 0, 0, bgSize*scale, bgSize*scale);
@@ -242,12 +256,8 @@ window.onload = function()
 		ctx.drawImage(menu, 0, 0, 520, 135, 0, textHeight-vText, 520, 135);
 		niceText("Red Imp",hText,textHeight+(textSpacing*0));
 
-		//action menu
-		niceText("Attack",actionMenu,textHeight+(textSpacing*0));
-		niceText("Defend",actionMenu,textHeight+(textSpacing*1));
-		niceText("Special",actionMenu,textHeight+(textSpacing*2));
-		niceText("Magic",actionMenu,textHeight+(textSpacing*3));
-		niceText("Item",actionMenu,textHeight+(textSpacing*4));
+		//pop-up action menu
+		actionMenuPopUp('Special');
 
 		//player names text menu
 		niceText(player1Name,textPlayerNames,textHeight);
@@ -273,9 +283,9 @@ window.onload = function()
 		//chat window
 		ctx.drawImage(menuchat, 0, 0, 280, 510, chatWindow, 0, 280, 510);
 		//ctx.drawImage(menu, 0, 0, 81, 62, chatWindow, textHeight-vText, 81, 62);
-		niceText("PlayerOne: ouch.",chatWindow+hText,vText+(textSpacing*0));
-		niceText("PlayerFive: i am slain...",chatWindow+hText,vText+(textSpacing*1));
-		niceText("PlayerTwo: rezzing",chatWindow+hText,vText+(textSpacing*2));
+		niceText(player1Name+": ouch.",chatWindow+hText,vText+(textSpacing*0));
+		niceText(player5Name+": i am slain...",chatWindow+hText,vText+(textSpacing*1));
+		niceText(player2Name+": rezzing",chatWindow+hText,vText+(textSpacing*2));
 
 		//http://goldfirestudios.com/blog/108/CanvasInput-HTML5-Canvas-Text-Input
 		var input = new CanvasInput({
@@ -284,7 +294,7 @@ window.onload = function()
 		y: 255*2-34,
 		fontSize: 16,
 		fontFamily: 'Arial',
-		fontColor: '#000000',
+		fontColor: '#ffffff',
 		//fontWeight: 'bold',
 		width: 800-chatWindow-27,
 		padding: 2,
@@ -292,8 +302,9 @@ window.onload = function()
 		borderColor: '#0000ff',
 		borderRadius: 0,
 		boxShadow: '1px 1px 0px #fff',
+		backgroundColor: '#1429ab',
 		//innerShadow: '0px 0px 5px rgba(0, 0, 0, 0.5)',
-		placeHolder: player1Name
+		//placeHolder: player1Name
 		});
 	}
 
