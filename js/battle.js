@@ -183,6 +183,19 @@ window.onload = function()
 		ctx.fillText(text, horizontal, vertical);
 	};
 
+	function drawBG()
+	{
+		ctx.drawImage(bg, 0, 0, bgSize*scale, bgSize*scale);
+		ctx.drawImage(bg, bgSize*scale, 0, bgSize*scale, bgSize*scale);
+		ctx.drawImage(menu, 0, 0, 520, 135, 0, textHeight-vText, 520, 135);
+	};
+
+	function drawFloor(floorNum)
+	{
+		ctx.drawImage(menufloor, 0, 0, 150, 50, (520/2)-(150/2), 0, 150, 50);
+		niceText("Floor "+floorNum, (520/2)-31, 29);
+	};
+
 	function actionMenuPopUp(specialAction)
 	{
 		ctx.drawImage(menuaction, 0, 0, 82, 135, actionMenu-hText, textHeight-vText, 82, 135);
@@ -193,93 +206,8 @@ window.onload = function()
 		niceText("Item",actionMenu,textHeight+(textSpacing*4));
 	};
 
-	bg.onload = function()
+	function drawChatMenu()
 	{
-		ctx.drawImage(bg, 0, 0, bgSize*scale, bgSize*scale);
-		ctx.drawImage(bg, bgSize*scale, 0, bgSize*scale, bgSize*scale);
-
-		//draw enemies
-		enemyText("Red Imp",200,187);
-		ctx.drawImage(enemybar, 0, 0, 32, 4, 200, 190, 32*scale, 4*scale);
-		ctx.drawImage(imp, 0, 0, enemySmall, enemySmall, 200, 200, enemySmall*scale, enemySmall*scale);
-
-		//draw player 1
-		ctx.drawImage(HPMP, barPercent(player1hp, player1hpMax), 0, 5, 24, player1Row+36, player1, 5*scale, 24*scale);
-		ctx.drawImage(HPMP, barPercent(player1mp, player1mpMax), 24, 5, 48, player1Row+48, player1, 5*scale, 24*scale);
-		ctx.drawImage(readybar, 0, readyBarDisplay(25), 29, 5, player1Row, player1+charHeight*scale+2, 29*scale, 5*scale);
-		if (player1Pose!=poseDead)
-			ctx.drawImage(hero, player1Pose, 0, charWidth, charHeight, player1Row, player1, charWidth*scale, charHeight*scale);
-		else
-			ctx.drawImage(hero, player1Pose, 0, charWidthDead, charHeight, player1Row, player1, charWidthDead*scale, charHeight*scale);
-
-		//draw player 2
-		ctx.drawImage(HPMP, 0, 0, 5, 24, player2Row+36, player2, 5*scale, 24*scale);
-		ctx.drawImage(HPMP, 0, 24, 5, 48, player2Row+48, player2, 5*scale, 24*scale);
-		ctx.drawImage(readybar, 0, readyBarDisplay(119), 29, 5, player2Row, player2+charHeight*scale+2, 29*scale, 5*scale);
-		if (player2Pose!=poseDead)
-			ctx.drawImage(hero, player2Pose, 0, charWidth, charHeight, player2Row, player2, charWidth*scale, charHeight*scale);
-		else
-			ctx.drawImage(hero, player2Pose, 0, charWidthDead, charHeight, player2Row, player2, charWidthDead*scale, charHeight*scale);
-
-		//draw player 3
-		ctx.drawImage(HPMP, 0, 0, 5, 24, player3Row+36, player3, 5*scale, 24*scale);
-		ctx.drawImage(HPMP, 0, 24, 5, 48, player3Row+48, player3, 5*scale, 24*scale);
-		ctx.drawImage(readybar, 0, readyBarDisplay(175), 29, 5, player3Row, player3+charHeight*scale+2, 29*scale, 5*scale);
-		if (player3Pose!=poseDead)
-			ctx.drawImage(hero, player3Pose, 0, charWidth, charHeight, player3Row, player3, charWidth*scale, charHeight*scale);
-		else
-			ctx.drawImage(hero, player3Pose, 0, charWidthDead, charHeight, player3Row, player3, charWidthDead*scale, charHeight*scale);
-
-		//draw player 4
-		ctx.drawImage(HPMP, 0, 0, 5, 24, player4Row+36, player4, 5*scale, 24*scale);
-		ctx.drawImage(HPMP, 0, 24, 5, 48, player4Row+48, player4, 5*scale, 24*scale);
-		ctx.drawImage(readybar, 0, readyBarDisplay(55), 29, 5, player4Row, player4+charHeight*scale+2, 29*scale, 5*scale);
-		if (player4Pose!=poseDead)
-			ctx.drawImage(hero, player4Pose, 0, charWidth, charHeight, player4Row, player4, charWidth*scale, charHeight*scale);
-		else
-			ctx.drawImage(hero, player4Pose, 0, charWidthDead, charHeight, player4Row, player4, charWidthDead*scale, charHeight*scale);
-
-		//draw player 5
-		ctx.drawImage(HPMP, 100, 0, 5, 24, player5Row+36, player5, 5*scale, 24*scale);
-		ctx.drawImage(HPMP, 100, 24, 5, 48, player5Row+48, player5, 5*scale, 24*scale);
-		ctx.drawImage(readybar, 0, readyBarDisplay(0), 29, 5, player5Row, player5+charHeight*scale+2, 29*scale, 5*scale);
-		if (player5Pose!=poseDead)
-			ctx.drawImage(hero, player5Pose, 0, charWidth, charHeight, player1Row, player5, charWidth*scale, charHeight*scale);
-		else
-			ctx.drawImage(hero, player5Pose, 0, charWidthDead, charHeight, player1Row, player5, charWidthDead*scale, charHeight*scale);
-
-		//floor
-		ctx.drawImage(menufloor, 0, 0, 150, 50, (520/2)-(150/2), 0, 150, 50);
-		niceText("Floor B1", (520/2)-31, 29);
-
-		//enemy list menu
-		ctx.drawImage(menu, 0, 0, 520, 135, 0, textHeight-vText, 520, 135);
-		niceText("Red Imp",hText,textHeight+(textSpacing*0));
-
-		//pop-up action menu
-		actionMenuPopUp('Special');
-
-		//player names text menu
-		niceText(player1Name,textPlayerNames,textHeight);
-		niceText("An: "+player1hp+"/"+player1hpMax,textHP,textHeight+(textSpacing*0));
-		niceText("Ps: "+player1mp+"/"+player1mpMax,textMP,textHeight+(textSpacing*0));
-
-		niceText(player2Name,textPlayerNames,textHeight+(textSpacing*1));
-		niceText("An: 100/100",textHP,textHeight+(textSpacing*1));
-		niceText("Ps: 100/100",textMP,textHeight+(textSpacing*1));
-
-		niceText(player3Name,textPlayerNames,textHeight+(textSpacing*2));
-		niceText("An: 100/100",textHP,textHeight+(textSpacing*2));
-		niceText("Ps: 100/100",textMP,textHeight+(textSpacing*2));
-
-		niceText(player4Name,textPlayerNames,textHeight+(textSpacing*3));
-		niceText("An: 100/100",textHP,textHeight+(textSpacing*3));
-		niceText("Ps: 100/100",textMP,textHeight+(textSpacing*3));
-
-		niceText(player5Name,textPlayerNames,textHeight+(textSpacing*4));
-		niceText("An: 0/100",textHP,textHeight+(textSpacing*4));
-		niceText("Ps: 0/100",textMP,textHeight+(textSpacing*4));
-
 		//chat window
 		ctx.drawImage(menuchat, 0, 0, 280, 510, chatWindow, 0, 280, 510);
 		//ctx.drawImage(menu, 0, 0, 81, 62, chatWindow, textHeight-vText, 81, 62);
@@ -287,6 +215,7 @@ window.onload = function()
 		niceText(player5Name+": i am slain...",chatWindow+hText,vText+(textSpacing*1));
 		niceText(player2Name+": rezzing",chatWindow+hText,vText+(textSpacing*2));
 
+		//chat text box
 		//http://goldfirestudios.com/blog/108/CanvasInput-HTML5-Canvas-Text-Input
 		var input = new CanvasInput({
 		canvas: document.getElementById('myCanvas'),
@@ -306,10 +235,117 @@ window.onload = function()
 		//innerShadow: '0px 0px 5px rgba(0, 0, 0, 0.5)',
 		//placeHolder: player1Name
 		});
-	}
+	};
+
+	function drawEnemy(enemyName, enemyNum, enemyX, enemyY)
+	{
+		enemyText(enemyName,enemyX,enemyY-13);
+		ctx.drawImage(enemybar, 0, 0, 32, 4, enemyX, enemyY-10, 32*scale, 4*scale);
+		ctx.drawImage(imp, 0, 0, enemySmall, enemySmall, enemyX, enemyY, enemySmall*scale, enemySmall*scale);
+		niceText(enemyName,hText,textHeight+(textSpacing*(enemyNum-1)));
+	};
+
+	function drawPlayer(playerNum)
+	{
+		if (playerNum == 1)
+		{
+			drawName = player1Name;
+			drawHP = player1hp;
+			drawHPMax = player1hpMax;
+			drawMP = player1mp;
+			drawMPMax = player1mpMax;
+			drawRow = player1Row;
+			drawHeight = player1;
+			drawReady = 25; //ready
+			drawPose = player1Pose;
+		}
+		else if (playerNum == 2)
+		{
+			drawName = player2Name;
+			drawHP = 100;
+			drawHPMax = 100;
+			drawMP = 100;
+			drawMPMax = 100;
+			drawRow = player2Row;
+			drawHeight = player2;
+			drawReady = 119; //ready
+			drawPose = player2Pose;
+		}
+		else if (playerNum == 3)
+		{
+			drawName = player3Name;
+			drawHP = 100;
+			drawHPMax = 100;
+			drawMP = 100;
+			drawMPMax = 100;
+			drawRow = player3Row;
+			drawHeight = player3;
+			drawReady = 175; //ready
+			drawPose = player3Pose;
+		}
+		else if (playerNum == 4)
+		{
+			drawName = player4Name;
+			drawHP = 100;
+			drawHPMax = 100;
+			drawMP = 100;
+			drawMPMax = 100;
+			drawRow = player4Row;
+			drawHeight = player4;
+			drawReady = 55; //ready
+			drawPose = player4Pose;
+		}
+		else if (playerNum == 5)
+		{
+			drawName = player5Name;
+			drawHP = 0;
+			drawHPMax = 100;
+			drawMP = 0;
+			drawMPMax = 100;
+			drawRow = player5Row;
+			drawHeight = player5;
+			drawReady = 0; //ready
+			drawPose = player5Pose;
+		}
+		else
+			return;
+		niceText(drawName,textPlayerNames,textHeight+(textSpacing*(playerNum-1)));
+		niceText("An: "+drawHP+"/"+drawHPMax,textHP,textHeight+(textSpacing*(playerNum-1)));
+		niceText("Ps: "+drawMP+"/"+drawMPMax,textMP,textHeight+(textSpacing*(playerNum-1)));
+		ctx.drawImage(HPMP, barPercent(drawHP, drawHPMax), 0, 5, 24,drawRow+36, drawHeight, 5*scale, 24*scale);
+		ctx.drawImage(HPMP, barPercent(drawMP, drawMPMax), 24, 5, 48, drawRow+48, drawHeight, 5*scale, 24*scale);
+		ctx.drawImage(readybar, 0, readyBarDisplay(drawReady), 29, 5, drawRow, drawHeight+charHeight*scale+2, 29*scale, 5*scale);
+		if (drawPose!=poseDead)
+			ctx.drawImage(hero, drawPose, 0, charWidth, charHeight, drawRow, drawHeight, charWidth*scale, charHeight*scale);
+		else
+			ctx.drawImage(hero, drawPose, 0, charWidthDead, charHeight, drawRow, drawHeight, charWidthDead*scale, charHeight*scale);
+	};
+
+	function drawScene()
+	{
+		drawBG();
+		drawFloor('B1');
+		drawChatMenu();
+
+		drawEnemy('Red Imp', 1, 200, 200);
+
+		drawPlayer(1);
+		drawPlayer(2);
+		drawPlayer(3);
+		drawPlayer(4);
+		drawPlayer(5);
+
+		actionMenuPopUp('Special');
+	};
 
 	function reset()
 	{
-	}
+	};
+
+	//replace this later
+	bg.onload = function()
+	{
+		drawScene();
+	};
 }
 
