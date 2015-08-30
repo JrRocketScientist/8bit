@@ -15,24 +15,7 @@ window.onload = function()
 	ctx.mozImageSmoothingEnabled = false;
 	ctx.imageSmoothingEnabled = false;
 
-	// main game loop
-	var lastTime;
-	function main()
-	{
-		var now = Date.now();
-		var dt = (now - lastTime) / 1000.0;
-		update(dt);
-		render();
-		lastTime = now;
-		requestAnimFrame(main);
-	};
-
-	function init()
-	{
-		reset();
-		lastTime = Date.now();
-		main();
-	}
+	var gameTime = 0;
 
 	resources.load([
 		'assets/cave_bg.png',
@@ -108,13 +91,6 @@ window.onload = function()
 	var hText = 15;
 	var vText = 27;
 
-	//player names
-	var player1Name = "PlayerOne";
-	var player2Name = "PlayerTwo";
-	var player3Name = "PlayerThree";
-	var player4Name = "PlayerFour";
-	var player5Name = "PlayerFive";
-
 	//character poses on sprite sheet
 	var poseStanding = 0;
 	var poseWalking = (charWidth+1)*1;
@@ -128,6 +104,13 @@ window.onload = function()
 	var poseWin = (charWidth+1)*9;
 	var poseWeak = (charWidth+1)*10;
 	var poseDead = (charWidth+1)*11;
+
+	//player names
+	var player1Name = "PlayerOne";
+	var player2Name = "PlayerTwo";
+	var player3Name = "PlayerThree";
+	var player4Name = "PlayerFour";
+	var player5Name = "PlayerFive";
 
 	//player row selection
 	var player1Row = frontRow;
@@ -151,6 +134,10 @@ window.onload = function()
 	var player3Pose = poseReady;
 	var player4Pose = poseStanding;
 	var player5Pose = poseDead;
+
+	//additional player variables
+	var playerReady = 1;
+	var playerSpecial = 'Special';
 
 	//calculate the hp/mp bar position
 	function barPercent(current, max)
@@ -245,12 +232,14 @@ window.onload = function()
 		});
 	};
 
-	function drawEnemy(enemyName, enemyNum, enemyX, enemyY, health)
+	function drawEnemy(enemyName, enemyNum, enemyX, enemyY, health, state)
 	{
+		stateX = (enemySmall*(state-1));
+		if (stateX != 0)
+			stateX+=1;
 		enemyText(enemyName,enemyX,enemyY-13);
-		//ctx.drawImage(enemybar, 0, 0, 32, 4, enemyX, enemyY-10, 32*scale, 4*scale);
-		ctx.drawImage(enemybar, 0, enemyBarDisplay(health), 32, 4, enemyX, enemyY-10, 32*scale, 4*scale);
-		ctx.drawImage(imp, 0, 0, enemySmall, enemySmall, enemyX, enemyY, enemySmall*scale, enemySmall*scale);
+		ctx.drawImage(enemybar, 0, enemyBarDisplay(health), enemySmall, 4, enemyX, enemyY-10, enemySmall*scale, 4*scale);
+		ctx.drawImage(imp, stateX, 0, enemySmall+stateX, enemySmall, enemyX, enemyY, enemySmall*scale, enemySmall*scale);
 		niceText(enemyName,hText,textHeight+(textSpacing*(enemyNum-1)));
 	};
 
@@ -336,7 +325,7 @@ window.onload = function()
 		drawFloor('B1');
 		drawChatMenu();
 
-		drawEnemy('Red Imp', 1, 200, 200, 75);
+		drawEnemy('Red Imp', 1, 200, 200, 75, 1);
 
 		drawPlayer(1);
 		drawPlayer(2);
@@ -344,17 +333,40 @@ window.onload = function()
 		drawPlayer(4);
 		drawPlayer(5);
 
-		actionMenuPopUp('Special');
+		if (playerReady == 1)
+			actionMenuPopUp(playerSpecial);
+	};
+
+	// main game loop
+	var lastTime;
+	function main()
+	{
+		var now = Date.now();
+		var dt = (now - lastTime) / 1000.0;
+		update(dt);
+		render();
+		lastTime = now;
+		requestAnimFrame(main);
+	};
+
+	function init()
+	{
+		reset();
+		lastTime = Date.now();
+		main();
+	}
+
+	function update(dt)
+	{
+	};
+
+	function render()
+	{
+		drawScene();
 	};
 
 	function reset()
 	{
-	};
-
-	//replace this later
-	bg.onload = function()
-	{
-		drawScene();
 	};
 }
 
