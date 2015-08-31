@@ -1,5 +1,19 @@
 window.onload = function()
 {
+	//https://hacks.mozilla.org/2011/08/animating-with-javascript-from-setinterval-to-requestanimationframe/
+	var requestAnimFrame = (function()
+	{
+		return window.requestAnimationFrame	||
+		window.webkitRequestAnimationFrame	||
+		window.mozRequestAnimationFrame	||
+		window.oRequestAnimationFrame	||
+		window.msRequestAnimationFrame	||
+		function(callback)
+		{
+			window.setTimeout(callback, 1000 / 60);
+        	};
+	})();
+
 	//create canvas
 	var c = document.getElementById("myCanvas");
 	var ctx = c.getContext("2d");
@@ -136,8 +150,9 @@ window.onload = function()
 	var player5Pose = poseDead;
 
 	//additional player variables
-	var playerReady = 1;
+	var playerReady = 0;
 	var playerSpecial = 'Special';
+	var n = 0;
 
 	//calculate the hp/mp bar position
 	function barPercent(current, max)
@@ -322,19 +337,28 @@ window.onload = function()
 	function drawScene()
 	{
 		drawBG();
-		drawFloor('B1');
+		drawFloor('B'+n);
 		drawChatMenu();
 
-		drawEnemy('Red Imp', 1, 200, 200, 75, 1);
+		drawEnemy('Red Imp', 1, 200, 200, 75, n+1);
 
 		drawPlayer(1);
 		drawPlayer(2);
 		drawPlayer(3);
 		drawPlayer(4);
 		drawPlayer(5);
+	};
 
-		if (playerReady == 1)
-			actionMenuPopUp(playerSpecial);
+	function init()
+	{
+		reset();
+		lastTime = Date.now();
+		main();
+	}
+
+	function reset()
+	{
+		playerReady = 0;
 	};
 
 	// main game loop
@@ -346,27 +370,21 @@ window.onload = function()
 		update(dt);
 		render();
 		lastTime = now;
-		requestAnimFrame(main);
+		requestAnimFrame(main); //loop!
 	};
-
-	function init()
-	{
-		reset();
-		lastTime = Date.now();
-		main();
-	}
 
 	function update(dt)
 	{
+		n += 1;
+		if (n > 1) n = 0;
+		playerReady = n;
 	};
 
 	function render()
 	{
 		drawScene();
-	};
-
-	function reset()
-	{
+		if (playerReady == 1)
+			actionMenuPopUp(playerSpecial);
 	};
 }
 
